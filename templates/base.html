@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>eCommerce</title>
+    <meta name="keywords" content="HTML5 Template">
+    <meta name="description" content="Molla - Bootstrap eCommerce Template">
+    <meta name="author" content="p-themes">
+    {% include 'partials/css.html' %}
+</head>
+
+<body>
+    <div class="page-wrapper">
+        
+        {% include 'partials/header.html' %}
+
+        {% block slidebar %}
+
+        {% endblock slidebar %}
+
+        {% block content %}
+        
+        {% endblock content %}
+
+        {% block blog %}
+
+        {% endblock blog %}
+
+        {% include 'partials/footer.html' %}
+        
+    </div><!-- End .page-wrapper -->
+    
+    <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
+
+    {% include 'partials/mobilemenu.html' %}
+
+    {% include 'partials/sign_in_up_modal.html' %}
+    
+    {% include 'partials/modal_add.html' %}
+
+    {% include 'partials/js.html' %}
+    {% block javascript %}
+    {% endblock javascript %}
+</body>
+
+
+</html>
+
