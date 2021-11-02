@@ -59,7 +59,12 @@
 										</h3><!-- End .product-title -->
 									</div><!-- End .product -->
 								</td>
+								{% if item.product.new_price %}
+								<td class="price-col">${{item.product.new_price}} <h6 style="text-decoration: line-through;color: #cccccc;" class="price-col">${{item.product.price}}</h6></td>
+								
+								{% else %}
 								<td class="price-col">${{item.product.price}}</td>
+								{% endif %}
 								{% if item.product.available %}
 								<td class="stock-col"><span class="in-stock">In stock</span></td>
 								{% else %}

@@ -67,7 +67,8 @@
                                 <div class="col-6 col-md-4 col-lg-3 col-xl-5col">
                                     <div class="product product-7 text-center">
                                         <figure class="product-media">
-                                            <span class="product-label label-circle label-sale">New</span>
+                                            
+                                            <span class="product-label label-circle label-sale">new</span>
                                            
                                             {% if product.available %}
                                                 <a href="{{product.get_absolute_url}}">
@@ -118,9 +119,9 @@
                                             </div><!-- End .product-price -->
                                             <div class="ratings-container">
                                                 <div class="ratings">
-                                                    <div class="ratings-val" style="width: 40%;"></div><!-- End .ratings-val -->
+                                                    <div class="ratings-val" style="width: {{product.all_reviews_rating}}%;"></div><!-- End .ratings-val -->
                                                 </div><!-- End .ratings -->
-                                                <span class="ratings-text">( 4 Reviews )</span>
+                                                <span class="ratings-text">( {{product.all_reviews|length}} Reviews )</span>
                                             </div><!-- End .rating-container -->
                                         </div><!-- End .product-body -->
                                     </div><!-- End .product -->

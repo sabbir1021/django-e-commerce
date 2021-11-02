@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     # Third Party
     'crispy_forms',
     'mptt',
+    'ckeditor',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'

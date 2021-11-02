@@ -52,7 +52,12 @@
 													</h3><!-- End .product-title -->
 												</div><!-- End .product -->
 											</td>
+											{% if item.product.new_price %}
+											<td class="price-col">${{item.product.new_price}} <h6 style="text-decoration: line-through;color: #cccccc;" class="price-col">${{item.product.price}}</h6></td>
+											
+											{% else %}
 											<td class="price-col">${{item.product.price}}</td>
+											{% endif %}
 											<td class="quantity-col">
                                                 <div class="cart-product-quantity">
                                                     {% comment %} <input type="number" class="form-control" value="{{item.quantity}}" min="1" max="10" step="1" data-decimals="0" required> {% endcomment %}

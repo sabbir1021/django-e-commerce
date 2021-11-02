@@ -8,11 +8,19 @@ from django.views import View
 
 class HomeView(View):
     def get(self, request):
-        products = Product.objects.all()
-        contex = {
-            'products' : products,
-        }
-        return render(request, 'product/home.html', contex)
+        try:
+            search = request.GET.get("q")
+            products = Product.objects.filter(title__icontains=search)
+            contex = {
+                'products' : products,
+            }
+            return render(request, 'product/home.html', contex)
+        except:
+            products = Product.objects.all()
+            contex = {
+                'products' : products,
+            }
+            return render(request, 'product/home.html', contex)
     
 
 class ProductView(View):

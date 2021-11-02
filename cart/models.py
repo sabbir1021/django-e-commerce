@@ -71,7 +71,7 @@ class OrderItem(models.Model):
     
     @property
     def get_total(self):
-        return self.product.price * self.quantity
+        return (self.product.new_price if self.product.new_price else self.product.price)  * self.quantity
 
 
 
