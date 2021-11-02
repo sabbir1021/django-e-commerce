@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 User = get_user_model()
-from .models import Profile, ShippingAddress
+from .models import Profile, ShippingAddress , BillingAddress
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
@@ -55,8 +55,22 @@ class RegisterForm(UserCreationForm):
 #         model = Profile
 #         fields = ('name', 'phone', 'address',)
 
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ('phone', 'address',)
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('username','email','first_name', 'last_name',)
 
 class ShippingForm(forms.ModelForm):
     class Meta:
         model = ShippingAddress
+        fields = ('full_name', 'phone','city','area', 'address','address_type')
+
+class BillingForm(forms.ModelForm):
+    class Meta:
+        model = BillingAddress
         fields = ('full_name', 'phone','city','area', 'address','address_type')

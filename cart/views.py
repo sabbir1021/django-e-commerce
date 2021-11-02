@@ -1,7 +1,7 @@
-from django.shortcuts import render,get_object_or_404
-from .models import Order, OrderItem, Payment, WishList, WishListItem
+from django.shortcuts import render,get_object_or_404, redirect
+from .models import Order, OrderItem, Payment, WishList, WishListItem, Coupon
 from product.models import Product
-from accounts.models import ShippingAddress
+from accounts.models import BillingAddress, ShippingAddress, User
 from django.views import View
 from django.http import JsonResponse
 import json
@@ -28,8 +28,12 @@ class UpdateItemView(View):
         product = Product.objects.get(id=productId)
         order, created = Order.objects.get_or_create(user=user,confirm_order=False, complete_order=False)
         orderitem, created = OrderItem.objects.get_or_create(order=order, product=product)
+        
         if action == 'add':
-            orderitem.quantity = (orderitem.quantity +1)
+            if product.quantity - orderitem.quantity > 0:
+                orderitem.quantity = (orderitem.quantity +1)
+            else:
+                orderitem.quantity = (orderitem.quantity)
         elif action == 'sub':
             orderitem.quantity = (orderitem.quantity -1)
         orderitem.save()
@@ -65,8 +69,46 @@ class WishListItemView(View):
         return JsonResponse('item' , safe=False)
 
 def checkouts(request):
+    billings = BillingAddress.objects.filter(user=request.user)
     shippings = ShippingAddress.objects.filter(user= request.user)
+   
+    if request.method == 'POST':
+        payment_method = request.POST.get("payment")
+        t_id = request.POST.get("t_id")
+        order = get_object_or_404(Order, user=request.user, confirm_order=False,complete_order=False)
+        items = order.orderitem_set.all()
+        for item in items:
+            item.product.quantity = item.product.quantity - item.quantity
+            if item.product.quantity == 0:
+                item.product.available = False
+                item.product.save()
+            item.product.save()
+        if payment_method == "bkash" and t_id:
+            payment, created = Payment.objects.get_or_create(order=order,name=payment_method, trans_id=t_id)
+        else:
+            payment, created = Payment.objects.get_or_create(order=order,name=payment_method)
+        
+        order.billing_address = get_object_or_404(BillingAddress, id=request.POST.get("billing"))
+        order.shipping_address = get_object_or_404(ShippingAddress, id=request.POST.get("shipping"))
+        order.confirm_order = True
+        order.save()
+        return redirect('product:home')
     context= {
-        'shippings':shippings
+        'billings':billings,
+        'shippings':shippings,
+       
     }
     return render(request, "cart/checkout.html",context)
+
+def coupon_check(request):
+    if request.method == 'POST':
+        coupon_name = request.POST.get("coupon")
+        try:
+            if get_object_or_404(Coupon, coupon=coupon_name):
+                print(coupon_name)
+                order = get_object_or_404(Order, user=request.user, confirm_order=False,complete_order=False)
+                order.coupon_discount = get_object_or_404(Coupon, coupon=coupon_name)
+                order.save()
+                return redirect('cart:chackout')
+        except:
+            return redirect('cart:chackout')

@@ -28,9 +28,7 @@
 								    <li class="nav-item">
 								        <a class="nav-link" id="tab-orders-link" data-toggle="tab" href="#tab-orders" role="tab" aria-controls="tab-orders" aria-selected="false">Orders</a>
 								    </li>
-								    <li class="nav-item">
-								        <a class="nav-link" id="tab-downloads-link" data-toggle="tab" href="#tab-downloads" role="tab" aria-controls="tab-downloads" aria-selected="false">Downloads</a>
-								    </li>
+								    
 								    <li class="nav-item">
 								        <a class="nav-link" id="tab-address-link" data-toggle="tab" href="#tab-address" role="tab" aria-controls="tab-address" aria-selected="false">Adresses</a>
 								    </li>
@@ -52,14 +50,39 @@
 								    </div><!-- .End .tab-pane -->
 
 								    <div class="tab-pane fade" id="tab-orders" role="tabpanel" aria-labelledby="tab-orders-link">
-								    	<p>No order has been made yet.</p>
-								    	<a href="category.html" class="btn btn-outline-primary-2"><span>GO SHOP</span><i class="icon-long-arrow-right"></i></a>
+								    	<div class="row">
+											<div class="col-md-6 col-lg-6 col-sm-6">
+											<h3>Proccesing Order </h3>
+											{% if confirm_orders %}
+											<div class="list-group">
+												{% for order in confirm_orders %}
+												<a href="" class="list-group-item list-group-item-action">Order ID : {{order.id}} - Items : {{order.get_item_total}}   - ammount : {{order.get_cart_total}}. More....</a>
+												{% endfor %}
+											</div>
+											{% else %}
+											<p>No order has been made yet.</p>
+											{% endif %}
+											</div>
+
+											<div class="col-md-6 col-lg-6 col-sm-6">
+											<h3>Complete Order</h3>
+											{% if complete_orders %}
+											<div class="list-group">
+												{% for order in complete_orders %}
+												<a href="" class="list-group-item list-group-item-action">Order ID : {{order.id}} - Items : {{order.get_item_total}}   - ammount : {{order.get_cart_total}}. More....</a>
+												{% endfor %}
+											</div>
+											{% else %}
+											<p>No order has been Complete yet.</p>
+											{% endif %}
+											</div>
+										</div>
+										
+										
+								    	<a href="{% url 'product:home' %}" class="btn btn-outline-primary-2"><span>GO SHOP</span><i class="icon-long-arrow-right"></i></a>
 								    </div><!-- .End .tab-pane -->
 
-								    <div class="tab-pane fade" id="tab-downloads" role="tabpanel" aria-labelledby="tab-downloads-link">
-								    	<p>No downloads available yet.</p>
-								    	<a href="category.html" class="btn btn-outline-primary-2"><span>GO SHOP</span><i class="icon-long-arrow-right"></i></a>
-								    </div><!-- .End .tab-pane -->
+								    
 
 								    <div class="tab-pane fade" id="tab-address" role="tabpanel" aria-labelledby="tab-address-link">
 								    	<p>The following addresses will be used on the checkout page by default.</p>
@@ -77,11 +100,11 @@
 														Area : {{billing.area}}<br>
 														Address : {{billing.address}}<br>
 														address Type : {{billing.get_address_type_display}}<br>
-														<a href="#">Edit <i class="icon-edit"></i></a></p>
+														<a href="{% url 'accounts:billing_update' id=billing.id %}">Edit <i class="icon-edit"></i></a></p>
 								    				</div><!-- End .card-body -->
 								    			</div><!-- End .card-dashboard -->
 											{% endfor %}
-								    		<a href="{% url 'accounts:shipping' %}">Add Billing Address <i class="icon-edit"></i></a></p>
+								    		<a href="{% url 'accounts:billing' %}">Add Billing Address <i class="icon-edit"></i></a></p>
 											</div><!-- End .col-lg-6 -->
 
 								    		<div class="col-lg-6">
@@ -96,7 +119,7 @@
 														Area : {{shipping.area}}<br>
 														Address : {{shipping.address}}<br>
 														address Type : {{shipping.get_address_type_display}}<br>
-														<a href="#">Edit <i class="icon-edit"></i></a></p>
+														<a href="{% url 'accounts:shipping_update' id=shipping.id %}">Edit <i class="icon-edit"></i></a></p>
 								    				</div><!-- End .card-body -->
 								    			</div><!-- End .card-dashboard -->
 											{% endfor %}
@@ -106,39 +129,43 @@
 								    </div><!-- .End .tab-pane -->
 
 								    <div class="tab-pane fade" id="tab-account" role="tabpanel" aria-labelledby="tab-account-link">
-								    	<form action="#">
+								    	<form method="post">
+											{% csrf_token %}
 			                				<div class="row">
 			                					<div class="col-sm-6">
 			                						<label>First Name *</label>
-			                						<input type="text" class="form-control" required>
+			                						<input type="text" class="form-control" name="first_name" value={{user.first_name}} required>
 			                					</div><!-- End .col-sm-6 -->
 
 			                					<div class="col-sm-6">
 			                						<label>Last Name *</label>
-			                						<input type="text" class="form-control" required>
+			                						<input type="text" class="form-control" name="last_name" value="{{user.last_name}}" required>
 			                					</div><!-- End .col-sm-6 -->
 			                				</div><!-- End .row -->
 
-		            						<label>Display Name *</label>
-		            						<input type="text" class="form-control" required>
+		            						<label>User Name *</label>
+		            						<input type="text" class="form-control" name="username" value="{{user.username}}" required>
 		            						<small class="form-text">This will be how your name will be displayed in the account section and in reviews</small>
 
 		                					<label>Email address *</label>
-		        							<input type="email" class="form-control" required>
+		        							<input type="email" class="form-control" name="email" value="{{user.email}}" required>
 
-		            						<label>Current password (leave blank to leave unchanged)</label>
-		            						<input type="password" class="form-control">
+											<label>Phone *</label>
+		        							<input type="text" class="form-control" name="phone" value="{{profile.phone}}" required>
 
-		            						<label>New password (leave blank to leave unchanged)</label>
-		            						<input type="password" class="form-control">
+											<label>Address *</label>
+		        							<input type="text" class="form-control" name="address" value="{{profile.address}}" required>
 
-		            						<label>Confirm new password</label>
-		            						<input type="password" class="form-control mb-2">
+		            						
 
 		                					<button type="submit" class="btn btn-outline-primary-2">
 			                					<span>SAVE CHANGES</span>
 			            						<i class="icon-long-arrow-right"></i>
 			                				</button>
+											<a href="{% url 'accounts:change_password' %}" class="btn btn-outline-primary-2">
+			                					<span>Change Your Password</span>
+			            						<i class="icon-long-arrow-right"></i>
+			                				</a>
 			                			</form>
 								    </div><!-- .End .tab-pane -->
 								</div>

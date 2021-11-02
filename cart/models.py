@@ -1,12 +1,26 @@
 from django.db import models
+from django.utils.translation import activate
+from accounts.models import BillingAddress , ShippingAddress
 from product.models import Product
 from django.contrib.auth import get_user_model
 User = get_user_model()
 # Create your models here.
 
+class Coupon(models.Model):
+    name = models.CharField(max_length=100)
+    ammount = models.IntegerField()
+    activate = models.BooleanField()
+    coupon = models.CharField(max_length=30)
 
+    def __str__(self):
+        return self.name
+        
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    billing_address = models.ForeignKey(BillingAddress, on_delete=models.CASCADE, blank=True, null=True)
+    shipping_address = models.ForeignKey(ShippingAddress, on_delete=models.CASCADE, blank=True, null=True)
+    delevary_charge = models.IntegerField(default=30, blank=True, null=True)
+    coupon_discount = models.ForeignKey(Coupon, on_delete=models.CASCADE, blank=True, null=True)
     confirm_order = models.BooleanField()
     complete_order = models.BooleanField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -23,7 +37,17 @@ class Order(models.Model):
     def get_cart_total(self):
         items = self.orderitem_set.all()
         return sum(i.get_total for i in items)
+
+    @property
+    def get_cart_total_with_delevary(self):
+        items = self.orderitem_set.all()
+        return sum(i.get_total for i in items) + self.delevary_charge
     
+    @property
+    def get_cart_total_with_delevary_and_coupon(self):
+        items = self.orderitem_set.all()
+        return sum(i.get_total for i in items) + self.delevary_charge - (self.coupon_discount.ammount if self.coupon_discount else 0)
+
     @property
     def get_item_total(self):
         items = self.orderitem_set.all()

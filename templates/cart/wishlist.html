@@ -35,25 +35,44 @@
 								<td class="product-col">
 									<div class="product">
 										<figure class="product-media">
-											<a href="#">
+											{% if item.product.available %}
+											<a href="{{item.product.get_absolute_url}}">
 												{% for ima in item.product.all_image|slice:"0:1" %}
 												<img src="{{ima.image.url}}" alt="Product image">
 												{% endfor %}
 											</a>
+											{% else %}
+											<a >
+												{% for ima in item.product.all_image|slice:"0:1" %}
+												<img style="opacity:30%" src="{{ima.image.url}}" alt="Product image">
+												{% endfor %}
+											</a>
+											{% endif %}
 										</figure>
 
 										<h3 class="product-title">
-											<a href="#">{{item.product.title}}</a>
+											{% if item.product.available %}
+												<a href="{{item.product.get_absolute_url}}">{{item.product.title}}</a>
+											{% else %}
+												<a>{{item.product.title}}</a>
+											{% endif %}
 										</h3><!-- End .product-title -->
 									</div><!-- End .product -->
 								</td>
 								<td class="price-col">${{item.product.price}}</td>
+								{% if item.product.available %}
 								<td class="stock-col"><span class="in-stock">In stock</span></td>
+								{% else %}
+								<td style="opacity:60%" class="stock-col"><span class="in-stock">Out of stock</span></td>
+								{% endif %}
+
 								<td class="action-col">
                                     <div class="dropdown">
+									{% if item.product.available %}
 									<button class="btn btn-block btn-outline-primary-2 update-cart" data-product = {{item.product.id}} data-action = "add">
                                         <i class="icon-list-alt"></i>Add To Cart
                                     </button>
+									{% endif %}
                                     </div>
 								</td>
 								<td class="remove-col"><button class="btn-remove wish-list" data-product = {{item.product.id}} data-action = "del"><i class="icon-close"></i></button></td>

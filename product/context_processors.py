@@ -7,7 +7,7 @@ def categories(request):
 
 def order(request):
     try:
-        order = get_object_or_404(Order, user=request.user)
+        order = get_object_or_404(Order, user=request.user, confirm_order=False,complete_order=False)
         items = order.orderitem_set.all()
     except:
         order ={'get_item_total':0}

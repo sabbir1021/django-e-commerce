@@ -10,4 +10,5 @@ urlpatterns = [
     path('wishlist/', views.wishlist, name="wishlist"),
     path('wishlist_item/', views.WishListItemView.as_view(), name="wishlist_item"),
     path('chackout/', views.checkouts , name="chackout"),
+    path('coupon/', views.coupon_check , name="coupon"),
 ]

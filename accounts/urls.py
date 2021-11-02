@@ -8,6 +8,13 @@ app_name = "accounts"
 urlpatterns = [
     path('dashboard', views.DashboardView.as_view(), name='dashboard'),
     path('shipping', views.shipping, name='shipping'),
+    path('shipping_update/<int:id>', views.shipping_update, name='shipping_update'),
+    path('shipping_delete/<int:id>', views.shipping_delete, name='shipping_delete'),
+    path('billing', views.billing, name='billing'),
+    path('billing_update/<int:id>', views.billing_update, name='billing_update'),
+    path('billing_delete/<int:id>', views.billing_delete, name='billing_delete'),
+    
+    #login register
     path('login/',auth_views.LoginView.as_view(template_name='accounts/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='accounts/logout.html'), name='logout'),
     path('register/', views.RegisterView.as_view(), name='register'),

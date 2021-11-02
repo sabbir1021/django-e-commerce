@@ -20,61 +20,72 @@
             	<div class="checkout">
 	                <div class="container">
             			<div class="checkout-discount">
-            				<form action="#">
-        						<input type="text" class="form-control" required id="checkout-discount-input">
+            				<form method="post" action="{% url 'cart:coupon' %}">
+							{% csrf_token %}
+								
+        						<input type="text" class="form-control" name="coupon" required id="checkout-discount-input">
             					<label for="checkout-discount-input" class="text-truncate">Have a coupon? <span>Click here to enter your code</span></label>
-            				</form>
+								
+							</form>
             			</div><!-- End .checkout-discount -->
-            			<form action="#">
+            			<form method="post">
+							{% csrf_token %}
 		                	<div class="row">
 		                		<div class="col-lg-9">
-		                			<h2 class="checkout-title">Billing Details</h2><!-- End .checkout-title -->
-		                			<ul>
-										{% for shipping in shippings %}
-										<li>Name : {{shipping.full_name}} address : {{shipping.address}}</li>
-										{% endfor %}
-									</ul>
-										<div class="row">
-		                					<div class="col-sm-6">
-		                						<label>Full Name *</label>
-		                						<input type="text" name="full_name" class="form-control" required>
-		                					</div><!-- End .col-sm-6 -->
+									<div class="row">
+										<div class="col-lg-6">
+											<h2 class="checkout-title">Billing Details</h2><!-- End .checkout-title -->
+											{% for billing in billings %}
+												
+												<div class="card card-dashboard">
+													<div class="card-body">
+														<div class="form-check">
+															<input class="form-check-input" type="radio"  name="billing" value="{{billing.id}}" checked required>
+															<label class="form-check-label ml-3" for="defaultCheck1">
+																Slelect
+															</label>
+														</div>
+														<h3 class="card-title">Billing Address : {{billing.get_address_type_display}}</h3><!-- End .card-title -->
 
-		                					<div class="col-sm-6">
-		                						<label>Phone *</label>
-		                						<input type="text" name="phone" class="form-control" required>
-		                					</div><!-- End .col-sm-6 -->
-		                				</div><!-- End .row -->
-										<div class="row">
-		                					<div class="col-sm-6">
-		                						<label>City *</label>
-		                						<input type="text" name="city" class="form-control" required>
-		                					</div><!-- End .col-sm-6 -->
+														<p>Full Name : {{billing.full_name}}<br>
+														Phone : {{billing.phone}}<br>
+														City : {{billing.city}}<br>
+														Area : {{billing.area}}<br>
+														Address : {{billing.address}}<br>
+														address Type : {{billing.get_address_type_display}}<br>
+														<a href="{% url 'accounts:billing_update' id=billing.id %}">Edit <i class="icon-edit"></i></a></p>
+													</div><!-- End .card-body -->
+												</div><!-- End .card-dashboard -->
+											{% endfor %}
+											<a href="{% url 'accounts:shipping' %}">Add Billing Address <i class="icon-edit"></i></a></p>
+										</div><!-- End .col-lg-6 -->
 
-		                					<div class="col-sm-6">
-		                						<label>Area *</label>
-		                						<input type="text" name="area" class="form-control" required>
-		                					</div><!-- End .col-sm-6 -->
-		                				</div><!-- End .row -->
-										
+										<div class="col-lg-6">
+											<h2 class="checkout-title">Shipping Details</h2><!-- End .checkout-title -->
+											{% for shipping in shippings %}
+												<div class="card card-dashboard">
+													<div class="card-body">
+														<div class="form-check">
+															<input class="form-check-input" type="radio"  name="shipping" value="{{shipping.id}}" checked required>
+															<label class="form-check-label ml-3" for="defaultCheck1">
+																Slelect
+															</label>
+														</div>
+														<h3 class="card-title">Shipping Address : {{shipping.get_address_type_display}}</h3><!-- End .card-title -->
 
-
-	            						<label>Street address *</label>
-	            						<input type="text" name="address" class="form-control" placeholder="House number and Street name" required>
-	            						<div class="row">
-		                				<div class="col-sm-6">
-											<label>Address Type *</label>
-											<select class="form-control" name="address_type" required="" id="id_address_type">
-												<option value="" selected="">---------</option>
-												<option value="H">Home</option>
-												<option value="O">Office</option>
-											</select>
-	                					</div>
-										</div>
-										<div class="checkbox">
-											<label>if your billing address same clicl here</label>
-											<input type="checkbox" name="billing" value="yes">
-										</div>
+														<p>Full Name : {{shipping.full_name}}<br>
+														Phone : {{shipping.phone}}<br>
+														City : {{shipping.city}}<br>
+														Area : {{shipping.area}}<br>
+														Address : {{shipping.address}}<br>
+														address Type : {{shipping.get_address_type_display}}<br>
+														<a href="{% url 'accounts:shipping_update' id=shipping.id %}">Edit <i class="icon-edit"></i></a></p>
+													</div><!-- End .card-body -->
+												</div><!-- End .card-dashboard -->
+											{% endfor %}
+											<a href="{% url 'accounts:shipping' %}">Add Billing Address <i class="icon-edit"></i></a></p>
+										</div><!-- End .col-lg-6 -->
+									</div>
 		                		</div><!-- End .col-lg-9 -->
 		                		<aside class="col-lg-3">
 		                			<div class="summary">
@@ -100,12 +111,22 @@
 		                							<td>${{order.get_cart_total}}</td>
 		                						</tr><!-- End .summary-subtotal -->
 		                						<tr>
+		                							<td>Delevary Charge:</td>
+		                							<td>{{order.delevary_charge}}</td>
+		                						</tr>
+												<tr>
 		                							<td>Shipping:</td>
 		                							<td>Free shipping</td>
 		                						</tr>
+												{% if order.coupon_discount %}
+												<tr>
+		                							<td>Discount Coupon:</td>
+		                							<td>- {{order.coupon_discount.ammount}}</td>
+		                						</tr>
+												{% endif %}
 		                						<tr class="summary-total">
 		                							<td>Total:</td>
-		                							<td>${{order.get_cart_total}}</td>
+		                							<td>${{order.get_cart_total_with_delevary_and_coupon}}</td>
 		                						</tr><!-- End .summary-total -->
 		                					</tbody>
 		                				</table><!-- End .table table-summary -->

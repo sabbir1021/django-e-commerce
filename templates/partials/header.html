@@ -40,8 +40,8 @@
                                     {% if request.user.is_authenticated %}
                                         <li><a href="{% url 'accounts:logout' %}">logout</a></li>
                                     {% else %}
-                                        <li><a href="{% url 'accounts:login' %}" >Sign in</a></li>
-                                        <li><a href="{% url 'accounts:register' %}" >Sign up</a></li>
+                                        <li><a href="{% url 'accounts:login' %}" >Sign in / Sign up</a></li>
+                                       
                                     {% endif %}
                                 </ul>
                             </li>

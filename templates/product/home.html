@@ -68,14 +68,25 @@
                                     <div class="product product-7 text-center">
                                         <figure class="product-media">
                                             <span class="product-label label-circle label-sale">New</span>
-                                            <a href="{{product.get_absolute_url}}">
+                                           
+                                            {% if product.available %}
+                                                <a href="{{product.get_absolute_url}}">
                                                 {% for ima in product.all_image|slice:"0:1" %}
                                                 <img src="{{ima.image.url}}" alt="Product image" class="product-image">
                                                 {% endfor %}
                                                 {% for ima in product.all_image|slice:"1:2" %}
                                                 <img src="{{ima.image.url}}" alt="Product image" class="product-image-hover">
                                                 {% endfor %}
-                                            </a>
+                                                </a>
+                                            {% else %}
+                                                {% for ima in product.all_image|slice:"0:1" %}
+                                                <img style="opacity:30%" src="{{ima.image.url}}" alt="Product image" class="product-image">
+                                                {% endfor %}
+                                                {% for ima in product.all_image|slice:"1:2" %}
+                                                <img  src="{{ima.image.url}}" alt="Product image" class="product-image-hover">
+                                                {% endfor %}
+                                            {% endif %}
+                                            
 
                                             <div class="product-action-vertical">
                                                 <a href="" data-product = {{product.id}} data-action = "add" class="btn-product-icon btn-wishlist btn-expandable wish-list"><span>add to wishlist</span></a>
@@ -83,12 +94,20 @@
                                             </div><!-- End .product-action-vertical -->
 
                                             <div class="product-action">
+                                                {% if product.available %}
                                                 <a href="" data-product = {{product.id}} data-action = "add" class="btn-product btn-cart update-cart"><span>add to cart</span></a>
+                                                {% else %}
+                                                <a class="btn-product btn-carts"><span>Out of Stock</span></a>
+                                                {% endif %}
                                             </div><!-- End .product-action -->
                                         </figure><!-- End .product-media -->
 
                                         <div class="product-body">
-                                            <h3 class="product-title"><a href="product.html">{{product.title}}</a></h3><!-- End .product-title -->
+                                            {% if product.available %}
+                                            <h3 class="product-title"><a href="{{product.get_absolute_url}}">{{product.title}}</a></h3><!-- End .product-title -->
+                                            {% else %}
+                                            <h3 class="product-title"><a >{{product.title}}</a></h3><!-- End .product-title -->
+                                            {% endif %}
                                             <div class="product-price">
                                                 {% if product.discount %}
                                                 <span class="new-price">$ {{product.new_price|floatformat:2}}</span>
