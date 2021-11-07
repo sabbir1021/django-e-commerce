@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <title>Hello, world!</title>
+  </head>
+  <body>
+    <br>
+    <div class="container" > 
+       <a href="{% url 'dashboard:dashboards' %}" class="btn btn-info mb-5"> Dashboard </a>
+      
+       <div class="row">
+        <div class="col-md-6 col-lg-6 col-sm-6 card p-2">
+        <h3>Order ID : {{order.id}} </h3>
+        <h3>User : {{order.user}} </h3>
+        <h3>Product List</h3>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                    <th>Product Name</th>
+                    <th>price</th>
+                    <th>Quantity</th>
+                    <th>total price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>{{item.product.title}}</td>
+                        <td>{{item.product.price}}</td>
+                        <td>{{item.quantity}}</td>
+                        <td>{{item.get_total}}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <th>Total</th>
+                        <td></td>
+                        <td></td>
+                        <th>{{order.get_cart_total}}</th>
+                    </tr>
+                </tbody>
+            </table>
+        {% if order.confirm_order and order.complete_order == False %}
+        <form method="post">
+            {% csrf_token %}
+             <input type="hidden" name="complete" value="yes">
+            <button href="" class="btn btn-info mb-5"> Complete Order </button>
+        </form>
+        {% endif %}
+        </div>
+
+        <div class="col-md-6 col-lg-6 col-sm-6">
+            <div class="card p-2 mb-2">
+            <h2>Shipping Address</h2>
+                    <h6>full_name : {{order.shipping_address.full_name}}</h6>
+                    <h6>Phone : {{order.shipping_address.phone}}</h6>
+                    <h6>City : {{order.shipping_address.city}}</h6>
+                    <h6>Area : {{order.shipping_address.area}}</h6>
+                    <h6>Address : {{order.shipping_address.address}}</h6>
+                    <h6>Address type : {{order.shipping_address.get_address_type_display}}</h6>
+            </div>
+            <div class="card p-2 mb-2">
+            <h2>Billing Address</h2>
+                    <h6>full_name : {{order.billing_address.full_name}}</h6>
+                    <h6>Phone : {{order.billing_address.phone}}</h6>
+                    <h6>City : {{order.billing_address.city}}</h6>
+                    <h6>Area : {{order.billing_address.area}}</h6>
+                    <h6>Address : {{order.billing_address.address}}</h6>
+                    <h6>Address type : {{order.billing_address.get_address_type_display}}</h6>
+            </div>
+            <div class="card p-2">
+                <h2>Payment Method</h2>
+                {% for pay in payment %}
+                    <h6>Payment method name  : {{pay.name}}</h6>
+                    {% if pay.trans_id %}
+                        <h6>Transation id  : {{pay.trans_id}}</h6>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="card p-2">
+                <h2>Order Status</h2>
+                {% if order.confirm_order and order.complete_order %}
+                    <h6>Complete</h6> 
+                {% elif order.confirm_order %}
+                     <h6>Confirm</h6> 
+                {% endif %} 
+            </div>
+            <br>
+            
+        </div>
+
+       </div>
+    </div>
+
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+    -->
+  </body>
+</html>

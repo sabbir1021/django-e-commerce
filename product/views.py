@@ -9,7 +9,6 @@ from django.core.paginator import Paginator
 
 # Create your views here.
 
-
 class HomeView(View):
     def get(self, request):
         try:
@@ -59,3 +58,4 @@ class CategoryView(View):
         }
         return render(request, 'product/category.html',contex)
     
+

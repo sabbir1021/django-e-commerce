@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'product',
     'cart',
     'about',
+    'dashboard',
 
     #default app
     'django.contrib.admin',
