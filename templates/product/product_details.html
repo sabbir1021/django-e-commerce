@@ -67,7 +67,9 @@
                                     </div><!-- End .product-price -->
 
                                     <div class="product-content">
-                                        <p>Sed egestas, ante et vulputate volutpat, eros pede semper est, vitae luctus metus libero eu augue. Morbi purus libero, faucibus adipiscing. Sed lectus. </p>
+                                        {% if product.sort_description %}
+                                        {{product.sort_description|safe}}
+                                        {% endif %}
                                     </div><!-- End .product-content -->
 
                                     {% comment %} <div class="details-filter-row details-row-size">
@@ -229,75 +231,46 @@
                                 }
                             }
                         }'>
+                        {% for product in related_products %}
                         <div class="product product-7 text-center">
                             <figure class="product-media">
+                                {% if product.timecheck <= 5 %}
                                 <span class="product-label label-new">New</span>
-                                <a href="product.html">
-                                    <img src="{% static 'assets/images/products/product-4.jpg' %}" alt="Product image" class="product-image">
+                                {% endif %}
+                                <a href="{{product.get_absolute_url}}">
+                                    {% for ima in product.all_image|slice:"0:1" %}
+                                    <img src="{{ima.image.url}}" alt="Product image" class="product-image">
+                                     {% endfor %}
                                 </a>
 
                                 <div class="product-action-vertical">
-                                    <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                    <a href="" data-product = {{product.id}} data-action = "add" class="btn-product-icon btn-wishlist btn-expandable wish-list"><span>add to wishlist</span></a>
                                     <a href="popup/quickView.html" class="btn-product-icon btn-quickview" title="Quick view"><span>Quick view</span></a>
-                                    <a href="#" class="btn-product-icon btn-compare" title="Compare"><span>Compare</span></a>
                                 </div><!-- End .product-action-vertical -->
 
                                 <div class="product-action">
-                                    <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                    <a href="" data-product = {{product.id}} data-action = "add" class="btn-product btn-cart update-cart"><span>add to cart</span></a>
                                 </div><!-- End .product-action -->
                             </figure><!-- End .product-media -->
 
                             <div class="product-body">
                                 <div class="product-cat">
-                                    <a href="#">Women</a>
+                                    <a href="#">{{product.category}}</a>
                                 </div><!-- End .product-cat -->
-                                <h3 class="product-title"><a href="product.html">Brown paperbag waist <br>pencil skirt</a></h3><!-- End .product-title -->
+                                <h3 class="product-title"><a href="{{product.get_absolute_url}}">{{product.title}}</a></h3><!-- End .product-title -->
                                 <div class="product-price">
-                                    $60.00
+                                    ${{product.price}}
                                 </div><!-- End .product-price -->
                                 <div class="ratings-container">
                                     <div class="ratings">
-                                        <div class="ratings-val" style="width: 20%;"></div><!-- End .ratings-val -->
+                                        <div class="ratings-val" style="width: {{product.all_reviews_rating}}%;"></div><!-- End .ratings-val -->
                                     </div><!-- End .ratings -->
-                                    <span class="ratings-text">( 2 Reviews )</span>
+                                    <span class="ratings-text">( {{product.all_reviews|length}} Reviews )</span>
                                 </div><!-- End .rating-container -->
                             </div><!-- End .product-body -->
                         </div><!-- End .product -->
 
-                        <div class="product product-7 text-center">
-                            <figure class="product-media">
-                                <span class="product-label label-new">New</span>
-                                <a href="product.html">
-                                    <img src="{% static 'assets/images/products/product-4.jpg' %}" alt="Product image" class="product-image">
-                                </a>
-
-                                <div class="product-action-vertical">
-                                    <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
-                                    <a href="popup/quickView.html" class="btn-product-icon btn-quickview" title="Quick view"><span>Quick view</span></a>
-                                    <a href="#" class="btn-product-icon btn-compare" title="Compare"><span>Compare</span></a>
-                                </div><!-- End .product-action-vertical -->
-
-                                <div class="product-action">
-                                    <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                                </div><!-- End .product-action -->
-                            </figure><!-- End .product-media -->
-
-                            <div class="product-body">
-                                <div class="product-cat">
-                                    <a href="#">Women</a>
-                                </div><!-- End .product-cat -->
-                                <h3 class="product-title"><a href="product.html">Brown paperbag waist <br>pencil skirt</a></h3><!-- End .product-title -->
-                                <div class="product-price">
-                                    $60.00
-                                </div><!-- End .product-price -->
-                                <div class="ratings-container">
-                                    <div class="ratings">
-                                        <div class="ratings-val" style="width: 20%;"></div><!-- End .ratings-val -->
-                                    </div><!-- End .ratings -->
-                                    <span class="ratings-text">( 2 Reviews )</span>
-                                </div><!-- End .rating-container -->
-                            </div><!-- End .product-body -->
-                        </div><!-- End .product -->
+                        {% endfor %}
 
                     </div><!-- End .owl-carousel -->
                 </div><!-- End .container -->
@@ -312,23 +285,25 @@
                 <div class="col-6">
                     <figure class="product-media">
                         <a href="product.html">
-                            <img src="{% static 'assets/images/products/sticky/product-1.jpg' %}" alt="Product image">
+                            {% for ima in product.all_image|slice:"0:1" %}
+                            <img src="{{ima.image.url}}" alt="Product image">
+                            {% endfor %}
                         </a>
                     </figure><!-- End .product-media -->
-                    <h4 class="product-title"><a href="product.html">Dark yellow lace cut out swing dress</a></h4><!-- End .product-title -->
+                    <h4 class="product-title"><a href="product.html">{{product.title}}</a></h4><!-- End .product-title -->
                 </div><!-- End .col-6 -->
 
                 <div class="col-6 justify-content-end">
                     <div class="product-price">
-                        $84.00
+                        ${{product.price}}
                     </div><!-- End .product-price -->
                     <div class="product-details-quantity">
                         <input type="number" id="sticky-cart-qty" class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required>
                     </div><!-- End .product-details-quantity -->
 
                     <div class="product-details-action">
-                        <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                        <a href="#" class="btn-product btn-wishlist" title="Wishlist"><span>Add to Wishlist</span></a>
+                        <a href="" data-product = {{product.id}} data-action = "add" class="btn-product btn-cart update-cart"><span>add to cart</span></a>
+                        <a href="" data-product = {{product.id}} data-action = "add" class="btn-product btn-wishlist wish-list" title="Wishlist"><span>Add to Wishlist</span></a>
                     </div><!-- End .product-details-action -->
                 </div><!-- End .col-6 -->
             </div><!-- End .row -->

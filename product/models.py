@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 from ckeditor.fields import RichTextField
 from mptt.models import MPTTModel, TreeForeignKey
-import datetime 
+from datetime import datetime
 
 # Create your models here.
 
@@ -46,6 +46,7 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     title = models.CharField(max_length=250)
     slug     = models.SlugField(max_length=255, null=True, blank=True)
+    sort_description = RichTextField(blank=True, null=True)
     description = RichTextField()
     additional_information = RichTextField(blank=True, null=True)
     price =  models.DecimalField(max_digits=10, decimal_places=2)
@@ -96,6 +97,15 @@ class Product(models.Model):
             return round(total, 2)
         except:
             return 0
+    
+    @property
+    def timecheck(self):
+        d1 = datetime.now()
+        d2 = datetime(year = self.created_at.year , month= self.created_at.month , day = self.created_at.day, hour = self.created_at.hour , minute = self.created_at.minute)
+        d = d1 - d2
+        d_days = d.days
+        return d_days
+
         
     
     
