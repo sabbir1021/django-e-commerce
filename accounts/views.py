@@ -90,87 +90,98 @@ def activate(request, uidb64, token):
 
 
 
-
-
-def shipping(request):
-    form = ShippingForm()
-    form = ShippingForm(request.POST)
-    if form.is_valid():
-        billing_with = request.POST.get("billing")
-        shipping = form.save(commit=False)
-        shipping.user = request.user
-        shipping.save()
-        if billing_with == 'yes':
-            billing, created = BillingAddress.objects.get_or_create(user=request.user, full_name=request.POST.get("full_name"), phone=request.POST.get("phone"), city=request.POST.get("city"), area=request.POST.get("area"), address=request.POST.get("address"), address_type=request.POST.get("address_type"))
-        return redirect('product:home')
-    else:
+class ShippingView(View):
+    def get(self,request):
+        form = ShippingForm()
         context = {
-            'form': form,
+                'form': form,
         }
         return render(request, "accounts/shipping_add_form.html",context)
-    context = {
-            'form': form,
-        }
-
-    return render(request, "accounts/shipping_add_form.html",context)
-
-
-def shipping_update(request,id):
-    shipping = get_object_or_404(ShippingAddress, id=id)
-    if request.method == "POST":
-        user = request.user
-        form = ShippingForm(request.POST or None, instance=shipping)
+    
+    def post(self,request):
+        form = ShippingForm(request.POST)
         if form.is_valid():
-            form.save()
-            
-    context = {
-        'shipping':shipping
-    }
-    return render(request, "accounts/shipping_update.html",context)
+            billing_with = request.POST.get("billing")
+            shipping = form.save(commit=False)
+            shipping.user = request.user
+            shipping.save()
+            if billing_with == 'yes':
+                billing, created = BillingAddress.objects.get_or_create(user=request.user, full_name=request.POST.get("full_name"), phone=request.POST.get("phone"), city=request.POST.get("city"), area=request.POST.get("area"), address=request.POST.get("address"), address_type=request.POST.get("address_type"))
+            return redirect('accounts:dashboard')
+        else:
+            context = {
+                'form': form,
+            }
+            return render(request, "accounts/shipping_add_form.html",context)
 
 
-
-def billing(request):
-    form = BillingForm()
-    form = BillingForm(request.POST)
-    if form.is_valid():
-        shipping_with = request.POST.get("shipping")
-        billing = form.save(commit=False)
-        billing.user = request.user
-        billing.save()
-        if shipping_with == 'yes':
-            shipping, created = ShippingAddress.objects.get_or_create(user=request.user, full_name=request.POST.get("full_name"), phone=request.POST.get("phone"), city=request.POST.get("city"), area=request.POST.get("area"), address=request.POST.get("address"), address_type=request.POST.get("address_type"))
-        return redirect('product:home')
-    else:
+class ShippingUpdateView(View):
+    def get(self,request,*args, **kwargs):
+        shipping = get_object_or_404(ShippingAddress, id=kwargs['id'])    
         context = {
-            'form': form,
+            'shipping':shipping
+        }
+        return render(request, "accounts/shipping_update.html",context)
+    
+    def post(self,request,*args, **kwargs):
+        shipping = get_object_or_404(ShippingAddress, id=kwargs['id'])  
+        if request.method == "POST":
+            user = request.user
+            form = ShippingForm(request.POST or None, instance=shipping)
+            if form.is_valid():
+                form.save()
+                return redirect('accounts:dashboard')
+
+
+class BillingView(generic.FormView):
+    def get(self,request):
+        form = BillingForm()
+        context = {
+                'form': form,
         }
         return render(request, "accounts/billing_add_form.html",context)
-    context = {
-            'form': form,
-        }
 
-    return render(request, "accounts/billing_add_form.html",context)
-
-def billing_update(request,id):
-    billing = get_object_or_404(BillingAddress, id=id)
-    if request.method == "POST":
-        user = request.user
-        form = BillingForm(request.POST or None, instance=billing)
+    def post(self,request):
+        form = BillingForm(request.POST)
         if form.is_valid():
-            form.save()
-            
-    context = {
-        'billing':billing
-    }
-    return render(request, "accounts/billing_update.html",context)
+            shipping_with = request.POST.get("shipping")
+            billing = form.save(commit=False)
+            billing.user = request.user
+            billing.save()
+            if shipping_with == 'yes':
+                shipping, created = ShippingAddress.objects.get_or_create(user=request.user, full_name=request.POST.get("full_name"), phone=request.POST.get("phone"), city=request.POST.get("city"), area=request.POST.get("area"), address=request.POST.get("address"), address_type=request.POST.get("address_type"))
+            return redirect('accounts:dashboard')
+        else:
+            context = {
+                'form': form,
+            }
+            return render(request, "accounts/billing_add_form.html",context)
 
-def billing_delete(request,id):
-    billing = get_object_or_404(BillingAddress, id=id)
-    billing.delete()
-    return redirect("accounts:dashboard")
+class BillingUpdateView(View):
+    def get(self,request,*args, **kwargs):
+        billing = get_object_or_404(BillingAddress, id=kwargs['id'])
+        context = {
+            'billing':billing
+        }
+        return render(request, "accounts/billing_update.html",context)
+    def post(self,request,*args, **kwargs):
+        billing = get_object_or_404(BillingAddress, id=kwargs['id'])
+        if request.method == "POST":
+            user = request.user
+            form = BillingForm(request.POST or None, instance=billing)
+            if form.is_valid():
+                form.save()
+                return redirect('accounts:dashboard')
 
-def shipping_delete(request,id):
-    shipping = get_object_or_404(ShippingAddress, id=id)
-    shipping.delete()
-    return redirect("accounts:dashboard")
+
+class BillingDeleteView(View):
+    def get(self,request,*args, **kwargs):
+        billing = get_object_or_404(BillingAddress, id=kwargs['id'])
+        billing.delete()
+        return redirect("accounts:dashboard")
+
+class ShippingDeleteView(View):
+    def get(self,request,*args, **kwargs):
+        shipping = get_object_or_404(ShippingAddress, id=kwargs['id'])
+        shipping.delete()
+        return redirect("accounts:dashboard")
