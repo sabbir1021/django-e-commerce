@@ -51,9 +51,10 @@
         <form method="post">
             {% csrf_token %}
              <input type="hidden" name="complete" value="yes">
-            <button href="" class="btn btn-info mb-5"> Complete Order </button>
+            <button class="btn btn-info mb-5"> Complete Order </button>
         </form>
         {% endif %}
+        <a target="blank" href="{% url 'dashboard:pdf_create' id=order.id %}" class="btn btn-info mb-5"> Pdf </a>
         </div>
 
         <div class="col-md-6 col-lg-6 col-sm-6">
