@@ -4,6 +4,7 @@ from product.models import Product
 from accounts.models import BillingAddress, ShippingAddress, User
 from django.views import View 
 from django.views.generic import ListView
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.http import JsonResponse
@@ -40,11 +41,13 @@ class UpdateItemView(View):
                 orderitem.quantity = (orderitem.quantity +1)
             else:
                 orderitem.quantity = (orderitem.quantity)
+                messages.success(self.request, f'{orderitem.product}. Item Have Left {orderitem.quantity}.')
         elif action == 'sub':
             orderitem.quantity = (orderitem.quantity -1)
         orderitem.save()
         if action == 'del':
             orderitem.delete()
+            messages.success(self.request, f'{orderitem.product}. Item deleted From Cart.')
         
         if orderitem.quantity <=0:
             orderitem.delete()
@@ -78,6 +81,7 @@ class WishListItemView(View):
         wishlistitem, created = WishListItem.objects.get_or_create(wishlist=wishlist, product=product)
         if action == "del":
             wishlistitem.delete()
+            messages.success(self.request, f'{wishlistitem.product}. Item deleted From Wishlist.')
         return JsonResponse('item' , safe=False)
 
 
@@ -114,6 +118,7 @@ class CheckOutView(View):
             order.shipping_address = get_object_or_404(ShippingAddress, id=request.POST.get("shipping"))
             order.confirm_order = True
             order.save()
+            messages.success(self.request, 'Your Order Successfully done.')
             return redirect('product:home')
   
         
@@ -128,6 +133,7 @@ class CouponCheckView(View):
                     order = get_object_or_404(Order, user=request.user, confirm_order=False,complete_order=False)
                     order.coupon_discount = get_object_or_404(Coupon, coupon=coupon_name)
                     order.save()
+                    messages.success(self.request, f'Coupon : {coupon_name} Successfully Added.')
                     return redirect('cart:chackout')
             except:
                 return redirect('cart:chackout')

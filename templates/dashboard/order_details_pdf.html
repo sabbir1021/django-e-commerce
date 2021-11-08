@@ -9,6 +9,8 @@
         @page {
             size: A4;
             margin: 1cm;
+            border: 1px solid #999999;
+            padding:10px;
         }
         * {
             box-sizing: border-box;
@@ -25,14 +27,10 @@
         text-align: center;
         }
         
-        
         .ship {
-            flex: 50%;
-
-        }
-        .bill {
-            flex: 0 0 auto;
-            width: 800px;
+            border: 1px solid #999999;
+            padding:5px;
+            width:10px;
         }
 
         
@@ -73,41 +71,38 @@
         </div>
     
     <div class="row">
-        <div class="ship">
+       
         <h2>Shipping Address</h2>
-                <h6>full_name : {{order.shipping_address.full_name}}</h6>
-                <h6>Phone : {{order.shipping_address.phone}}</h6>
-                <h6>City : {{order.shipping_address.city}}</h6>
-                <h6>Area : {{order.shipping_address.area}}</h6>
-                <h6>Address : {{order.shipping_address.address}}</h6>
-                <h6>Address type : {{order.shipping_address.get_address_type_display}}</h6>
-        </div>
-        <div class="bill">
+        <h6 class="ship">full_name : {{order.shipping_address.full_name}} <br>
+            Phone : {{order.shipping_address.phone}}  <br>  
+            City : {{order.shipping_address.city}}  <br>
+            Area : {{order.shipping_address.area}}  <br>
+            Address : {{order.shipping_address.address}} <br>
+            Address type : {{order.shipping_address.get_address_type_display}}</h6>
+        
         <h2>Billing Address</h2>
-                <h6>full_name : {{order.billing_address.full_name}}</h6>
-                <h6>Phone : {{order.billing_address.phone}}</h6>
-                <h6>City : {{order.billing_address.city}}</h6>
-                <h6>Area : {{order.billing_address.area}}</h6>
-                <h6>Address : {{order.billing_address.address}}</h6>
-                <h6>Address type : {{order.billing_address.get_address_type_display}}</h6>
-        </div>
-        <div class="pay">
-            <h2>Payment Method</h2>
-            {% for pay in payment %}
-                <h6>Payment method name  : {{pay.name}}</h6>
-                {% if pay.trans_id %}
-                    <h6>Transation id  : {{pay.trans_id}}</h6>
-                {% endif %}
-            {% endfor %}
-        </div>
-        <div class="status">
-            <h2>Order Status</h2>
-            {% if order.confirm_order and order.complete_order %}
-                <h6>Complete</h6> 
-            {% elif order.confirm_order %}
-                    <h6>Confirm</h6> 
-            {% endif %} 
-        </div>
+        <h6 class="ship">full_name : {{order.billing_address.full_name}} <br>
+            Phone : {{order.billing_address.phone}} <br>
+            City : {{order.billing_address.city}}   <br>
+            Area : {{order.billing_address.area}}   <br>
+            Address : {{order.billing_address.address}} <br>
+            Address type : {{order.billing_address.get_address_type_display}}</h6>
+        
+        <h2>Payment Method</h2>
+        {% for pay in payment %}
+            <h6>Payment method name  : {{pay.name}}</h6>
+            {% if pay.trans_id %}
+                <h6>Transation id  : {{pay.trans_id}}</h6>
+            {% endif %}
+        {% endfor %}
+        
+        <h2>Order Status</h2>
+        {% if order.confirm_order and order.complete_order %}
+            <h6>Complete</h6> 
+        {% elif order.confirm_order %}
+                <h6>Confirm</h6> 
+        {% endif %} 
+        
     </div>
     
   </body>

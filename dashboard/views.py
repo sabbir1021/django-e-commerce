@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic.base import View
 from django.views import View 
+from django.contrib import messages
 from cart.models import Order,OrderItem
 from django.contrib.auth.mixins import UserPassesTestMixin
 #pdf generate
@@ -54,6 +55,7 @@ class OrderDetailsView(View):
                 order = get_object_or_404(Order, pk=kwargs['id'])
                 order.complete_order = True
                 order.save()
+                messages.success(self.request, f'{order.id} no. order Successfuly Complete.')
                 return redirect('dashboard:dashboards')
 
 

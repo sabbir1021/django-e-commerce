@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth import authenticate , login
 from django.contrib.auth.models import User
+from django.contrib import messages
 from .forms import RegisterForm,ShippingForm , BillingForm , UserForm , ProfileForm
 from django.views import View, generic
 from django.urls import reverse_lazy
@@ -42,6 +43,7 @@ class DashboardView(View):
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
+            messages.success(self.request, 'Account Details Successfully Updated.')
             return redirect('accounts:dashboard')
         else:
             context = {
@@ -61,6 +63,7 @@ class RegisterView(generic.CreateView):
         user.profiles.address = form.cleaned_data.get('address')
         user.save()
         send_account_confirmation_email(self.request, user)
+        messages.success(self.request, 'Registration Successfully Done.Please Confirm Your Email')
         login(self.request, user)
         return super(RegisterView, self).form_valid(form)
     def get_success_url(self):
@@ -107,6 +110,7 @@ class ShippingView(View):
             shipping.save()
             if billing_with == 'yes':
                 billing, created = BillingAddress.objects.get_or_create(user=request.user, full_name=request.POST.get("full_name"), phone=request.POST.get("phone"), city=request.POST.get("city"), area=request.POST.get("area"), address=request.POST.get("address"), address_type=request.POST.get("address_type"))
+            messages.success(self.request, 'Shipping Address Successfully Created.')
             return redirect('accounts:dashboard')
         else:
             context = {
@@ -130,6 +134,7 @@ class ShippingUpdateView(View):
             form = ShippingForm(request.POST or None, instance=shipping)
             if form.is_valid():
                 form.save()
+                messages.success(self.request, 'Shipping Address Successfully Updated.')
                 return redirect('accounts:dashboard')
 
 
@@ -150,6 +155,7 @@ class BillingView(generic.FormView):
             billing.save()
             if shipping_with == 'yes':
                 shipping, created = ShippingAddress.objects.get_or_create(user=request.user, full_name=request.POST.get("full_name"), phone=request.POST.get("phone"), city=request.POST.get("city"), area=request.POST.get("area"), address=request.POST.get("address"), address_type=request.POST.get("address_type"))
+            messages.success(self.request, 'Billing Address Successfully Created.')
             return redirect('accounts:dashboard')
         else:
             context = {
@@ -171,6 +177,7 @@ class BillingUpdateView(View):
             form = BillingForm(request.POST or None, instance=billing)
             if form.is_valid():
                 form.save()
+                messages.success(self.request, 'Billing Address Successfully Updated.')
                 return redirect('accounts:dashboard')
 
 
@@ -178,10 +185,12 @@ class BillingDeleteView(View):
     def get(self,request,*args, **kwargs):
         billing = get_object_or_404(BillingAddress, id=kwargs['id'])
         billing.delete()
+        messages.success(self.request, 'Billing Address Successfully Deleted.')
         return redirect("accounts:dashboard")
 
 class ShippingDeleteView(View):
     def get(self,request,*args, **kwargs):
         shipping = get_object_or_404(ShippingAddress, id=kwargs['id'])
         shipping.delete()
+        messages.success(self.request, 'Shipping Address Successfully Deleted.')
         return redirect("accounts:dashboard")

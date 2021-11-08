@@ -207,3 +207,14 @@
                 </div><!-- End .container -->
             </div><!-- End .header-bottom -->
         </header><!-- End .header -->
+
+        {% if messages %}
+        {% for message in messages %}
+        <div style="padding: 0.15rem 1.25rem;line-height: 2;" class="alert alert-{{message.tags}} alert-dismissable text-center" role="alert">
+            <button style="transform: translateY(0%);font-size: 2.6rem;" class="close" data-dismiss="alert">
+                <small><sup>X</sup></small>
+            </button>
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
