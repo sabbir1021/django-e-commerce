@@ -70,23 +70,14 @@
                                             {% if product.timecheck <= 10 %}
                                             <span class="product-label label-circle label-sale">new</span>
                                             {% endif %}
-                                           
                                             {% if product.available %}
                                                 <a href="{{product.get_absolute_url}}">
-                                                {% for ima in product.all_image|slice:"0:1" %}
-                                                <img src="{{ima.image.url}}" alt="Product image" class="product-image">
-                                                {% endfor %}
-                                                {% for ima in product.all_image|slice:"1:2" %}
-                                                <img src="{{ima.image.url}}" alt="Product image" class="product-image-hover">
-                                                {% endfor %}
+                                                <img src="{{product.all_image.0.image.url}}" alt="Product image" class="product-image">
+                                                <img src="{{product.all_image.1.image.url}}" alt="Product image" class="product-image-hover">
                                                 </a>
                                             {% else %}
-                                                {% for ima in product.all_image|slice:"0:1" %}
-                                                <img style="opacity:30%" src="{{ima.image.url}}" alt="Product image" class="product-image">
-                                                {% endfor %}
-                                                {% for ima in product.all_image|slice:"1:2" %}
-                                                <img  src="{{ima.image.url}}" alt="Product image" class="product-image-hover">
-                                                {% endfor %}
+                                                <img style="opacity:30%" src="{{product.all_image.0.image.url}}" alt="Product image" class="product-image">
+                                                <img  src="{{product.all_image.1.image.url}}" alt="Product image" class="product-image-hover">
                                             {% endif %}
                                             
 
